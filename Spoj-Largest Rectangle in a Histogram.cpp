@@ -1,0 +1,242 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define Fayaz() ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+typedef long long ll;
+// const int m = 1e9+7;
+// vector <int> primes;
+// const int N = 1e5+9;
+// const int N1 = 1e8;
+ // bitset<N>is_prime;
+ // int f[N];
+ // void divisor(int n ){
+	// vector<int>divisor;
+	// for(int i =	1; i*i<=n ; i++){
+		// if(n%i==0){
+			// divisor.push_back(i);
+			// if(i!=n/i)divisor.push_back(n/i);
+		// }
+	// }
+// 	
+	// }
+// void hi_seive(){
+	// f[1]=1;
+	// for(int i =2; i*i<=N; i++){
+		// if(f[i]==0){
+			// for(int j =i*i; j<=N ; j+=i){
+				// f[j]=1;
+			// }
+		// }
+	// }
+	// for(int i =2; i<=N ; i++){
+		// if(f[i]==0){primes.push_back(i);}
+	// }
+// }
+// void hi_seive2(){
+	// is_prime[1]=false;
+	// for(int i=2 ; i<N1 ; i++){
+		// is_prime[i]=true;
+// 		
+	// }
+	// for(int i=2 ; i*i<N1 ; i++){
+		// if(is_prime[i])
+		// {	
+	       // for(int j = i *i  ; j<N1 ; j+=i){
+		    // is_prime[j]=false;
+// 		
+		// }
+		// }
+	// }
+// }
+int gcdm(int m1 ,  int n){
+	if(m1==n)return m1 ;
+	else if(m1>n) return gcdm(m1-n,n);
+	else return gcdm(m1 , n-m1);
+}
+int mod_add(int a,int b,int m){
+	return (a%m+b%m)%m;
+}
+ 
+int mod_sub(int a,int b,int m){
+	return (a%m-b%m+m)%m;
+}
+ 
+int mod_mul(int a,int b,int m){
+	return (a%m*b%m)%m;
+}
+// ll mul(ll a, ll b, ll p){
+	// return __int128(a)*b%p;
+// }
+// ll power(ll a , ll b , ll p){   *******Bigmod and mulmod ll******
+	// ll ans =1%p;
+	// while(b){
+		// if(b&1)ans = mul(ans , a , p);
+		// a= mul(a,a ,p);
+		// b>>=1;
+	// }
+	// return ans;
+// }
+// int Bigmod(int base , int power , int m ){
+	// if(power == 0)return 1;
+	// else if(power%2==1){
+		// int a = base%m;
+		// int b = Bigmod(base , power-1 , m);
+		// return mod_mul(a,b,m);
+	// }
+	// else if(power %2==0){
+		// int a = Bigmod(base , power/2 , m);
+		// return mod_mul(a , a,m);
+	// }
+// }
+// int mod_inverse(int a , int power ){
+	// return Bigmod(a , power , m);
+// }
+// int mod_div(int a , int b , int m){
+	// return mod_mul(a , mod_inverse(b , m-2) , m);
+// }
+// int safe_route( ll p){
+ 	// int k  =sqrtl(p);
+ 	// while(1LL*k*k>p)k--;
+ 	// while(1LL*k*k<p)k++;
+ 	// return k;
+ // }
+ 
+ // Sets the kth bit of x to 1 
+int set_kth_bit(int x, int k) {
+  return x | (1 << k);
+}
+
+// Sets the kth bit of x to 0 
+int unset_kth_bit(int x, int k) {
+  return x & (~(1 << k));
+}
+
+// Toggles kth bit of x 
+int toggle_kth_bit(int x, int k) {
+  return x ^ (1 << k);
+}
+ 
+ 
+const int N= 1e6;
+int a[N],count1[N];
+// memset(count , 0 , sizeof (count));
+ll tree[4*N];
+void build(int node , int st , int end) {
+	if(st==end){
+		tree[node] = a[st];
+		//count[node]++;
+		return;
+	}
+	int mid = (st+end)/2;
+	int left = 2*node;
+	int right = 2*node+1;
+	
+	build(left , st , mid);
+	build(right , mid+1 , end);
+	
+	tree[node] = min(tree[left],tree[right]);
+	
+	//change korte hobe
+	
+	
+}
+ll query(int node , int st , int end  , int i , int j ) {
+	if(st >j || end<i) return LLONG_MAX;//change korte hobe 
+	if(i<=st && j>=end)return tree[node];
+	int mid = (st + end ) / 2;
+	int left = 2*node ;
+	int right = 2*node + 1;
+    ll q1 = query(left , st , mid , i ,j) ;
+	ll q2 =  query(right , mid + 1 , end , i , j);
+	count1[q1]++;
+	count1[q2]++;
+	
+	/*change korte hobe*/
+	return min(q1 ,q2);
+	  
+}
+void upd(int node , int st , int end , int i , int x) {
+	if(st>i || end<i)return ;
+	if(st == end && st == i){
+		a[st]=x;
+		tree[node]= x;
+		return;
+	} 
+	int mid = (st + end)/2;
+	int left = 2*node ;
+	int right = 2*node + 1;
+	upd(2*node , st , mid , i , x);
+	upd(2*node +1 , mid+1 , end , i  , x);
+	/*change korte hobe*/
+		tree[node] =min(tree[left] , tree[right]);
+}
+
+int main() {
+    
+    Fayaz();
+    int n;
+	while(cin>>n&& n!=0)
+	{
+		int ar[n];
+		
+		for(int i =0; i<n ; cin>>ar[i++]);
+		ar[n]=0;
+		vector<int>right(n,n) ;
+		vector<int>left(n,-1);
+		
+		// right[0]=0;   left[0]=0;
+		// right[n+1]=0;   left[n+1]=0;
+		stack<int>s;
+		for(int i=0;i<n;i++){
+			while(!s.empty() &&(ar[s.top()]>ar[i]))
+			{
+				right[s.top()]=i;
+				s.pop();
+			}
+			s.push(i); 				
+		}
+		while(!s.empty()){
+			s.pop();
+		}
+		
+		for(int i=0;i<n;i++){
+			while(!s.empty() && (ar[s.top()]>ar[i]))
+			{
+				s.pop();
+			}
+			if(!s.empty()){
+				left[i] = s.top();
+			}
+			s.push(i); 				
+		}
+		
+	  // for(int i =0;i<n ; i++){
+			// cout<<right[i]<<" ";
+		// }
+		// cout<<endl;
+	  // for(int i =0;i<n ; i++){
+			// cout<<left[i]<<" ";
+		// }
+		// cout<<endl;
+		
+		int maxArea=0;
+		for (int i = 0; i < n; i++) {
+        int width = right[i] - left[i]-1 ; 
+        int area = ar[i] * width;          
+        maxArea = max(maxArea, area);        
+    }
+        cout<<maxArea<<endl;
+		// for(int i =0;i<n ; i++){
+			// cout<<left[i]<<" ";
+		// }
+		// cout<<endl;
+		
+		
+		
+		
+		
+		
+		
+	}
+       
+    
+}
